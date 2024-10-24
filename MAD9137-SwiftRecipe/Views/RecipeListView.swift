@@ -91,6 +91,7 @@ struct RecipeListView: View {
     ]
 
     @State private var searchText: String = ""
+    @State private var showingAddRecipe = false // Track if add view is shown
 
     // this statement simply says if there is not input on the search bar then the full list of recipe is shown, otherwise
     var filteredRecipes: [Recipe] {
@@ -121,17 +122,21 @@ struct RecipeListView: View {
                     }
                 }
                 .navigationTitle("Recipes")
-                NavigationLink(destination: AddRecipeView(recipes: $recipes)) { // added this parameter to allow data sharing though @binding
-                    VStack {
+                VStack {
+                    Button(action: {
+                        showingAddRecipe = true
+                    }) {
                         Image(systemName: "plus.circle.fill")
                             .font(.largeTitle)
                             .foregroundColor(.green)
-
-                        Text("Add Recipe")
-                            .font(.caption)
-                            .foregroundColor(.black)
                     }
-                    .padding()
+                    Text("Add Recipe")
+                        .font(.caption)
+                        .foregroundColor(.black)
+                }
+
+                .sheet(isPresented: $showingAddRecipe) {
+                    AddRecipeView(recipes: $recipes)
                 }
             }
         }
