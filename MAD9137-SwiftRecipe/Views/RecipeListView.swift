@@ -92,6 +92,7 @@ struct RecipeListView: View {
 
     @State private var searchText: String = ""
 
+    // this statement simply says if there is not input on the search bar then the full list of recipe is shown, otherwise
     var filteredRecipes: [Recipe] {
         if searchText.isEmpty {
             return recipes
@@ -110,7 +111,7 @@ struct RecipeListView: View {
 
                 // list of recipes
                 List(filteredRecipes) { recipe in
-                    NavigationLink(destination: RecipeDetailView(recipe: recipe)) {
+                    NavigationLink(destination: RecipeDetailView(recipe: recipe)) { // added recipe: recipe parameter as RecipeDetailView is designed to display the details of specific
                         VStack(alignment: .leading) {
                             Text(recipe.title).font(.headline)
                             Text(recipe.description)
@@ -120,6 +121,16 @@ struct RecipeListView: View {
                     }
                 }
                 .navigationTitle("Recipes")
+                NavigationLink(destination: AddRecipeView(recipes: $recipes)) {
+                    Text("Add Recipe")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .padding()
+                }
             }
         }
     }
