@@ -9,10 +9,10 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Text("Started App")
+        NavigationView {
+            RecipeListView()
+                .navigationTitle("Recipe List")
         }
-        .padding()
     }
 }
 
