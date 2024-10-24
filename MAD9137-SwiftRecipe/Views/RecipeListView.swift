@@ -103,10 +103,12 @@ struct RecipeListView: View {
     var body: some View {
         NavigationView {
             VStack {
+                // Filter recipes
                 TextField("Search Recipes...", text: $searchText)
                     .padding()
                     .textFieldStyle(RoundedBorderTextFieldStyle())
 
+                // list of recipes
                 List(filteredRecipes) { recipe in
                     NavigationLink(destination: RecipeDetailView(recipe: recipe)) {
                         VStack(alignment: .leading) {
@@ -117,7 +119,7 @@ struct RecipeListView: View {
                         }
                     }
                 }
-                .navigationTitle("SwiftRecipe")
+                .navigationTitle("Recipes")
             }
         }
     }

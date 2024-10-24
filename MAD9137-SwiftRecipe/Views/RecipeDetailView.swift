@@ -13,7 +13,6 @@ struct RecipeDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
-                Text(recipe.title).font(.largeTitle).padding(.bottom)
                 Text("Ingredients").font(.headline)
                 ForEach(recipe.ingredients, id: \.self) { ingredient in
                     Text("• \(ingredient)")
