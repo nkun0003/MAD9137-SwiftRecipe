@@ -121,15 +121,17 @@ struct RecipeListView: View {
                     }
                 }
                 .navigationTitle("Recipes")
-                NavigationLink(destination: AddRecipeView(recipes: $recipes)) {
-                    Text("Add Recipe")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                        .padding()
+                NavigationLink(destination: AddRecipeView(recipes: $recipes)) { // added this parameter to allow data sharing though @binding
+                    VStack {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.largeTitle)
+                            .foregroundColor(.green)
+
+                        Text("Add Recipe")
+                            .font(.caption)
+                            .foregroundColor(.black)
+                    }
+                    .padding()
                 }
             }
         }
