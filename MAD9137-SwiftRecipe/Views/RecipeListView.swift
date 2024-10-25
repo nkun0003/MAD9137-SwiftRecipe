@@ -91,7 +91,7 @@ struct RecipeListView: View {
     ]
 
     @State private var searchText: String = ""
-    @State private var showingAddRecipe = false // Track if add view is shown
+    @State private var showingAddRecipe = false // state just to track if add view is shown
 
     // this statement simply says if there is not input on the search bar then the full list of recipe is shown, otherwise
     var filteredRecipes: [Recipe] {
@@ -111,17 +111,20 @@ struct RecipeListView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
 
                 // list of recipes
-                List(filteredRecipes) { recipe in
-                    NavigationLink(destination: RecipeDetailView(recipe: recipe)) { // added recipe: recipe parameter as RecipeDetailView is designed to display the details of specific
-                        VStack(alignment: .leading) {
-                            Text(recipe.title).font(.headline)
-                            Text(recipe.description)
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
+                List {
+                    ForEach(filteredRecipes) { recipe in
+                        NavigationLink(destination: RecipeDetailView(recipe: recipe, recipes: $recipes)) { // added recipe: recipe and the other one for RecipeDetails parameter as RecipeDetailView is designed to display the details of specific
+                            VStack(alignment: .leading) {
+                                Text(recipe.title).font(.headline)
+                                Text(recipe.description)
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                            }
                         }
                     }
                 }
                 .navigationTitle("Recipes")
+
                 VStack {
                     Button(action: {
                         showingAddRecipe = true
@@ -135,6 +138,7 @@ struct RecipeListView: View {
                         .foregroundColor(.black)
                 }
 
+                // this .sheet presents the AddRecipeView as a modal
                 .sheet(isPresented: $showingAddRecipe) {
                     AddRecipeView(recipes: $recipes)
                 }
