@@ -17,16 +17,26 @@ struct RecipeDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Ingredients").font(.headline)
+                Text("Ingredients")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
                 ForEach(recipe.ingredients, id: \.self) { ingredient in
                     Text("• \(ingredient)")
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
-                Text("Steps").font(.headline).padding(.top)
+                Text("Steps")
+                    .font(.headline)
+                    .padding(.top)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
                 ForEach(recipe.steps, id: \.self) { step in
                     Text(step)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
+            .padding()
 
             Spacer()
 
