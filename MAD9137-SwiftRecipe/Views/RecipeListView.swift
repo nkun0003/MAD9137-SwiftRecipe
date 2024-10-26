@@ -124,7 +124,7 @@ struct RecipeListView: View {
                     }
                 }
                 .navigationTitle("Recipes")
-
+                
                 VStack {
                     Button(action: {
                         showingAddRecipe = true

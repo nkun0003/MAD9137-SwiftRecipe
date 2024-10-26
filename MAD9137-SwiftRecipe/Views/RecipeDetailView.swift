@@ -14,65 +14,131 @@ struct RecipeDetailView: View {
 
     @State private var showingActionSheet = false // state to show ActionSheet
 
+    // State variables for edit mode and storing updated recipe details
+    @State private var isEditing = false // Track whether we're in edit mode
+    @State private var editedTitle: String = "" // Store edited title
+    @State private var editedIngredients: String = "" // Store edited ingredients
+    @State private var editedSteps: String = "" // Store edited steps
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
+                // Title TextField for editing or showing the recipe title
+                if isEditing {
+                    TextField("Title", text: $editedTitle)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.bottom)
+                } else {
+                    Text(recipe.title)
+                        .font(.largeTitle)
+                        .padding(.bottom)
+                }
+
+                // Ingredients Section
                 Text("Ingredients")
                     .font(.headline)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                ForEach(recipe.ingredients, id: \.self) { ingredient in
-                    Text("• \(ingredient)")
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                if isEditing {
+                    TextField("Ingredients (comma-separated)", text: $editedIngredients)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                } else {
+                    ForEach(recipe.ingredients, id: \.self) { ingredient in
+                        Text("• \(ingredient)")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
 
+                // Steps Section
                 Text("Steps")
                     .font(.headline)
                     .padding(.top)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                ForEach(recipe.steps, id: \.self) { step in
-                    Text(step)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                if isEditing {
+                    TextField("Steps (comma-separated)", text: $editedSteps)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                } else {
+                    ForEach(recipe.steps, id: \.self) { step in
+                        Text(step)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
             }
             .padding()
 
             Spacer()
 
-            // the delete button that triggers the ActionSheet
+                .actionSheet(isPresented: $showingActionSheet) {
+                    ActionSheet(
+                        title: Text("Confirm Delete"),
+                        message: Text("Are you sure you want to delete this recipe?"),
+                        buttons: [
+                            .destructive(Text("Delete")) {
+                                deleteRecipe() // here calling delete function if confirmed
+                            },
+                            .cancel()
+                        ]
+                    )
+                }
+                .padding()
+        }
+        .navigationTitle(isEditing ? "Edit Recipe" : recipe.title) // the condition change title based on mode
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(isEditing ? "Save" : "Edit") {
+                    if isEditing {
+                        saveChanges()
+                    } else {
+                        startEditing()
+                    }
+                    isEditing.toggle() // this method to toggle edit mode
+                }
+            }
+        }
+        // the delete button that triggers the ActionSheet
+        VStack {
             Button(action: {
                 showingActionSheet = true // when click show the ActionSheet
             }) {
-                Text("Delete Recipe")
-                    .padding()
-                    .background(Color.red)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+                Image(systemName: "trash.circle.fill")
+                    .font(.largeTitle)
+                    .foregroundColor(.red)
             }
-            .padding()
-            .actionSheet(isPresented: $showingActionSheet) {
-                ActionSheet(
-                    title: Text("Confirm Delete"),
-                    message: Text("Are you sure you want to delete this recipe?"),
-                    buttons: [
-                        .destructive(Text("Delete")) {
-                            deleteRecipe() // here calling delete function if confirmed
-                        },
-                        .cancel()
-                    ]
-                )
-            }
-            .padding()
+            Text("Delete Recipe")
+                .font(.caption)
+                .foregroundColor(.black)
         }
-        .navigationTitle(recipe.title)
+        .onAppear {
+            // Initialize the text fields with the current recipe's data when the view appears
+            editedTitle = recipe.title
+            editedIngredients = recipe.ingredients.joined(separator: ", ")
+            editedSteps = recipe.steps.joined(separator: ", ")
+        }
     }
 
-    // function to delete the recipe and dismiss the view
+    // Function to delete the recipe and dismiss the view
     private func deleteRecipe() {
         if let index = recipes.firstIndex(where: { $0.id == recipe.id }) {
             recipes.remove(at: index)
-            presentationMode.wrappedValue.dismiss() // dismiss the view after deletion
+            presentationMode.wrappedValue.dismiss() // Dismiss the view after deletion
         }
+    }
+
+    // Function to enter edit mode
+    private func startEditing() {
+        editedTitle = recipe.title
+        editedIngredients = recipe.ingredients.joined(separator: ", ")
+        editedSteps = recipe.steps.joined(separator: ", ")
+    }
+
+    // Function to save the changes made to the recipe
+    private func saveChanges() {
+        if let index = recipes.firstIndex(where: { $0.id == recipe.id }) {
+            recipes[index].title = editedTitle
+            recipes[index].ingredients = editedIngredients.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+            recipes[index].steps = editedSteps.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+        }
+        presentationMode.wrappedValue.dismiss() // Dismiss the view after saving
     }
 }
