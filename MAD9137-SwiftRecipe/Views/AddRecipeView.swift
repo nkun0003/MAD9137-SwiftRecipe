@@ -37,7 +37,8 @@ struct AddRecipeView: View {
                     title: title,
                     description: description,
                     ingredients: ingredients.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) },
-                    steps: steps.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+                    steps: steps.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) },
+                    imageName: "recipe"
                 )
                 recipes.append(newRecipe) // here appending the above recipe that was inputed
                 presentationMode.wrappedValue.dismiss() // Close the view after saving
