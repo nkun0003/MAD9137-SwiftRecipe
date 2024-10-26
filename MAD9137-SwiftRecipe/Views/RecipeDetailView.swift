@@ -15,14 +15,22 @@ struct RecipeDetailView: View {
     @State private var showingActionSheet = false // state to show ActionSheet
 
     // State variables for edit mode and storing updated recipe details
-    @State private var isEditing = false // Track whether we're in edit mode
-    @State private var editedTitle: String = "" // Store edited title
-    @State private var editedIngredients: String = "" // Store edited ingredients
-    @State private var editedSteps: String = "" // Store edited steps
+    @State private var isEditing = false // track whether we're in edit mode
+    @State private var editedTitle: String = "" // store edited title
+    @State private var editedIngredients: String = "" // store edited ingredients
+    @State private var editedSteps: String = "" // store edited steps
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
+                // Display the recipe image
+                Image(recipe.imageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: .infinity)
+                    .cornerRadius(10)
+                    .padding(.bottom)
+
                 // Title TextField for editing or showing the recipe title
                 if isEditing {
                     TextField("Title", text: $editedTitle)
@@ -60,7 +68,7 @@ struct RecipeDetailView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 } else {
                     ForEach(recipe.steps, id: \.self) { step in
-                        Text(step)
+                        Text( step)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
@@ -83,7 +91,7 @@ struct RecipeDetailView: View {
                 }
                 .padding()
         }
-        .navigationTitle(isEditing ? "Edit Recipe" : recipe.title) // the condition change title based on mode
+        .navigationTitle(isEditing ? "Edit Recipe" : "") // the condition change title based on mode
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(isEditing ? "Save" : "Edit") {
