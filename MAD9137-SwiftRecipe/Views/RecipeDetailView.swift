@@ -119,6 +119,13 @@ struct RecipeDetailView: View {
                 .font(.caption)
                 .foregroundColor(.black)
         }
+        .alert("Notice", isPresented: $showAlert) {
+            Button("OK", role: .cancel) {
+                presentationMode.wrappedValue.dismiss() // close the view after saving
+            }
+        } message: {
+            Text(alertMessage)
+        }
         .onAppear {
             // Initialize the text fields with the current recipe's data when the view appears
             editedTitle = recipe.title
@@ -140,6 +147,8 @@ struct RecipeDetailView: View {
             recipes.remove(at: index)
             presentationMode.wrappedValue.dismiss() // Dismiss the view after deletion
         }
+        alertMessage = "Recipe successful deleted!"
+        showAlert = true
     }
 
     // Function to enter edit mode
