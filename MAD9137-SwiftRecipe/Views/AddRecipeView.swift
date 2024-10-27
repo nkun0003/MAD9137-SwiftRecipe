@@ -16,6 +16,8 @@ struct AddRecipeView: View {
     @State private var description: String = ""
     @State private var ingredients: String = ""
     @State private var steps: String = ""
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
         Form {
@@ -42,7 +44,8 @@ struct AddRecipeView: View {
                 imageName: "recipe"
             )
             recipes.append(newRecipe) // Appending the new recipe
-            presentationMode.wrappedValue.dismiss() // Close the view after saving
+            alertMessage = "Recipe was successful saved!"
+            showAlert = true
         }) {
             HStack {
                 Image(systemName: "checkmark.circle.fill")
@@ -56,6 +59,13 @@ struct AddRecipeView: View {
             .padding()
             .background(Color.green)
             .cornerRadius(10)
+        }
+        .alert("Notice", isPresented: $showAlert) {
+            Button("OK", role: .cancel) {
+                presentationMode.wrappedValue.dismiss() // close the view after saving
+            }
+        } message: {
+            Text(alertMessage)
         }
         .navigationTitle("Add Recipe")
     }
