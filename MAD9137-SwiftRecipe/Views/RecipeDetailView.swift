@@ -19,6 +19,8 @@ struct RecipeDetailView: View {
     @State private var editedTitle: String = "" // store edited title
     @State private var editedIngredients: String = "" // store edited ingredients
     @State private var editedSteps: String = "" // store edited steps
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
         ScrollView {
@@ -68,7 +70,7 @@ struct RecipeDetailView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                 } else {
                     ForEach(recipe.steps, id: \.self) { step in
-                        Text( step)
+                        Text(step)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
@@ -123,6 +125,13 @@ struct RecipeDetailView: View {
             editedIngredients = recipe.ingredients.joined(separator: ", ")
             editedSteps = recipe.steps.joined(separator: ", ")
         }
+        .alert("Notice", isPresented: $showAlert) {
+            Button("OK", role: .cancel) {
+                presentationMode.wrappedValue.dismiss() // close the view after saving
+            }
+        } message: {
+            Text(alertMessage)
+        }
     }
 
     // Function to delete the recipe and dismiss the view
@@ -147,6 +156,7 @@ struct RecipeDetailView: View {
             recipes[index].ingredients = editedIngredients.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
             recipes[index].steps = editedSteps.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
         }
-        presentationMode.wrappedValue.dismiss() // Dismiss the view after saving
+        alertMessage = "Recipe was successful edited!"
+        showAlert = true
     }
 }
